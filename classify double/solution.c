@@ -15,16 +15,62 @@ uint64_t convertToUint64 (double number) {
 }
 
 bool getBit (const uint64_t number, const uint8_t index) {
-    /// Your code here...
+    	uint64_t mask = 1 << index;
+    	uint64_t temp = mask & number;
+    	temp >>= index;
+		return temp;
 }
 
 
 /**
  * Checkers here:
  */
+bool checkSignNegative (uint64_t number) {
+    return getBit(number, 63);
+}
+
+bool checkDenormal (uint64_t number) {
+    for (uint8_t i = 0; i < 11; ++ i){
+        if (getBit(number, 62 - i)){
+            return 0;
+        }
+    }
+    for (uint8_t i = 0; i < 52; ++ i){
+        if (getBit(number, 51 - i)){
+            return 1;
+        }
+    }   
+    return 0;
+}
+
+bool checkNormal (uint64_t number) {
+    uint8_t counter = 0;
+    for (uint8_t i = 0; i < 11; ++ i){
+        if (getBit(number, 62 - i)){
+            counter += 1;
+        }
+    }
+    if (counter > 0 && counter < 11){
+        return 1;
+    } 
+    return 0;
+}
+
+bool checkNaN (uint64_t number) {
+    uint8_t counter = 0;
+    for (uint8_t i = 0; i < 11; ++ i){
+        if (getBit(number, 62 - i)){
+            counter += 1;
+        }
+    }
+    if (counter == 11){
+        return 1;
+    } 
+    return 0;
+}
 
 bool checkForPlusZero (uint64_t number) {
-    return number == 0x8000000000000000;
+    return number == 0x0000000000000000;
 }
 
 bool checkForMinusZero (uint64_t number) {
@@ -32,35 +78,41 @@ bool checkForMinusZero (uint64_t number) {
 }
 
 bool checkForPlusInf (uint64_t number) {
-    /// Your code here.
+    return number == 0x7ff0000000000000;
 }
 
 bool checkForMinusInf (uint64_t number) {
-    /// Your code here.
+    return number == 0xfff0000000000000;
 }
 
 bool checkForPlusNormal (uint64_t number) {
-    /// Your code here.
+    if (checkSignNegative(number)){
+        return 0;
+    }
+    return checkNormal(number);
 }
 
 bool checkForMinusNormal (uint64_t number) {
-    /// Your code here.
+    return (checkSignNegative(number) && checkNormal(number));
 }
 
 bool checkForPlusDenormal (uint64_t number) {
-    /// Your code here.
+    if (checkSignNegative(number)){
+        return 0;
+    }
+    return checkDenormal(number);
 }
 
 bool checkForMinusDenormal (uint64_t number) {
-    /// Your code here.
+    return (checkSignNegative(number) && checkDenormal(number));
 }
 
 bool checkForSignalingNan (uint64_t number) {
-    /// Your code here.
+    return (checkNaN(number) && !getBit(number, 51));
 }
 
 bool checkForQuietNan (uint64_t number) {
-    /// Your code here.
+    return (checkNaN(number) && getBit(number, 51));
 }
 
 
