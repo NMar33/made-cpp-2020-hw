@@ -6,7 +6,7 @@ typedef std::function<int (int)> Op;
 
 
 Op compose (size_t n, Op ops[]) {
-    /// Your code goes here.
+    /// Your code goes here.   
 }
 
 
