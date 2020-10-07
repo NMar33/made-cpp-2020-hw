@@ -7,6 +7,20 @@ typedef std::function<int (int)> Op;
 
 Op compose (size_t n, Op ops[]) {
     /// Your code goes here.   
+    if (n == 0) {
+        return [](int x){return x;};
+    }
+
+
+
+
+    if (n > 1) {
+        Op buff = [n, ops](int x){
+        return compose(n-1, ops)(ops[n - 1](x));
+    };
+    }
+
+    return ops[0];
 }
 
 
