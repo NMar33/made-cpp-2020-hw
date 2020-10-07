@@ -103,7 +103,7 @@ bool operator|| (
     }
     
      for(int i = 0; i < a.size(); ++ i) {
-        if (a[i] != b[i] * k) {
+        if ((a[i] - b[i] * k > 1e-7) or (b[i] * k - a[i] > 1e-7))  {
             return false;
         }   
 
@@ -129,13 +129,50 @@ bool operator&& (
     }
 
      for(int i = 0; i < a.size(); ++ i) {
-        if (a[i] != b[i] * k) {
+        if ((a[i] - b[i] * k > 1e-7) or (b[i] * k - a[i] > 1e-7)) {
             return false;
         }   
 
     }
 
     return true;
+}
+
+void reverse (vector<double>& a){
+    vector<double> c; 
+    for(int i = a.size() - 1; i >= 0; -- i) {
+        c.push_back(a[i]);
+    }
+    a = c;
+    return;
+}
+
+vector<int> operator| (
+    const vector<int>& a,
+    const vector<int>& b
+){
+    vector<int> c;
+
+    for(int i = 0; i < a.size(); ++ i) {
+        c.push_back(a[i]|b[i]);
+    }
+
+    return c;
+    
+}
+
+vector<int> operator& (
+    const vector<int>& a,
+    const vector<int>& b
+){
+    vector<int> c;
+
+    for(int i = 0; i < a.size(); ++ i) {
+        c.push_back(a[i] & b[i]);
+    }
+
+    return c;
+    
 }
 
 }  // namespace task
