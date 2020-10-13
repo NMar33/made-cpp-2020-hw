@@ -8,17 +8,18 @@ typedef std::function<int (int)> Op;
 Op compose (size_t n, Op ops[]) {
     /// Your code goes here.   
     if (n == 0) {
-        return [](int x){return x;};
+        Op idempotent = [](int x){return x;};
+        return idempotent;
     }
-
-
 
 
     if (n > 1) {
         Op buff = [n, ops](int x){
         return compose(n-1, ops)(ops[n - 1](x));
     };
+    return buff;
     }
+    
 
     return ops[0];
 }
@@ -38,6 +39,7 @@ int main () {
                 return p * x;
             };
         };
+    
 
     {
         Op ops[4] = {op1, op2(2), op1, op2(2)};
