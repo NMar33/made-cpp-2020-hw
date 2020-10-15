@@ -89,21 +89,47 @@ vector<double> operator% (
     
 }
 
+bool check_zero (
+    const vector<double>& b
+){
+    for(int i = 0; i < b.size(); ++ i) {
+        if (b[i] != 0) {
+            return false;
+        }
+    }
+    return true;
+}
+
+double find_k (
+    const vector<double>& a,
+    const vector<double>& b
+){
+    double k;
+
+    for(int i = 0; i < b.size(); ++ i) {
+        if (b[i] != 0) {
+            k = a[i] / b[i];
+            break;
+        }
+    }
+
+    return k;
+}
+
 bool operator|| (
     const vector<double>& a,
     const vector<double>& b
 ){
     double k;
 
-    for(int i = 0; i < a.size(); ++ i) {
-        if ((a[i] != 0) && (b[i] != 0)) {
-            k = a[i] / b[i];
-            break;
-        }
+    if (check_zero(b)) {
+        return true;
     }
-    
-     for(int i = 0; i < a.size(); ++ i) {
-        if ((a[i] - b[i] * k > 1e-7) or (b[i] * k - a[i] > 1e-7))  {
+
+    k = find_k(a, b);
+
+    for(int i = 0; i < a.size(); ++ i) {
+        if ((fabs(a[i] - b[i] * k ) > 1e-7))  {
             return false;
         }   
 
@@ -118,21 +144,18 @@ bool operator&& (
 ){
     double k;
 
-    for(int i = 0; i < a.size(); ++ i) {
-        if ((a[i] != 0) && (b[i] != 0)) {
-            k = a[i] / b[i];
-            break;
-        }
+    if (check_zero(b)) {
+        return true;
     }
-    if (k < 0) {
+
+    if (!(a || b)) {
         return false;
     }
 
-     for(int i = 0; i < a.size(); ++ i) {
-        if ((a[i] - b[i] * k > 1e-7) or (b[i] * k - a[i] > 1e-7)) {
-            return false;
-        }   
+    k = find_k(a, b);
 
+    if (k < 0) {
+        return false;
     }
 
     return true;
@@ -173,6 +196,25 @@ vector<int> operator& (
 
     return c;
     
+}
+
+std::ostream& operator<< (std::ostream &out, const vector<double>& a) {
+    for(int i = 0; i < a.size(); ++ i) {
+        out << a[i] << " ";
+    }
+    out << "\n";
+    return out;
+}
+
+std::istream& operator>> (std::istream &in, vector<double>& a) {
+    a = {};
+    int n;
+    in >> n;
+    a.resize(n);
+    for(int i = 0; i < n; ++ i) {
+        in >> a[i];
+    }
+    return in;
 }
 
 }  // namespace task
